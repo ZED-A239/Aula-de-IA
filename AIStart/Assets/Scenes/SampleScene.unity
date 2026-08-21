@@ -5460,7 +5460,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 859150338134482344, guid: 6ae713caeaa2f544fa92b1a4e5729d9e, type: 3}
   player: {fileID: 852153469}
   spawnInterval: 0.5
-  spawnRadius: 10
+  spawnRadius: 15
   maxEnemies: 20
   minSpawnInterval: 0.5
   maxSpawnInterval: 2

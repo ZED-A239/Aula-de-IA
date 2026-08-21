@@ -8,18 +8,24 @@ public class IABehavior : MonoBehaviour
     {
         Walk,
         Retreat,
-        Die
+        Die,
+        Slowed,
+        Fast
     }
 
     [Header("Settings")]
     public GameObject target;
     public float speed = 2f;
+    public float slowedSpeed = 1f;
+    public float fastSpeed = 4f;
     public float retreatSpeed = 3f;
+    public float slowedDuration = 0.5f;
     public float retreatDuration = 0.5f;
-    public int health = 1;
+    public int health = 2;
 
     private State currentState;
     private Rigidbody body;
+    private float slowedTimer;
     private float retreatTimer;
 
     void Start()
@@ -47,6 +53,12 @@ public class IABehavior : MonoBehaviour
                 break;
             case State.Retreat:
                 TickRetreat();
+                break;
+            case State.Slowed:
+                TickSlowed();
+                break;
+            case State.Fast:
+                TickFast();
                 break;
             case State.Die:
                 TickDie();
@@ -85,6 +97,37 @@ public class IABehavior : MonoBehaviour
         }
     }
 
+    void TickSlowed()
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        Vector3 direction = target.transform.position - transform.position;
+        direction.y = 0f;
+        body.linearVelocity = direction.normalized * slowedSpeed;
+
+        slowedTimer += Time.fixedDeltaTime;
+
+        if (slowedTimer >= slowedDuration)
+        {
+            ChangeState(State.Fast);
+        }
+    }
+
+    void TickFast()
+    {
+        if (target == null)
+        {
+            return;
+        }
+
+        Vector3 direction = target.transform.position - transform.position;
+        direction.y = 0f;
+        body.linearVelocity = direction.normalized * fastSpeed;
+    }
+
     void TickDie()
     {
         Destroy(gameObject);
@@ -97,6 +140,11 @@ public class IABehavior : MonoBehaviour
         if (health <= 0)
         {
             ChangeState(State.Die);
+        }
+
+        else
+        {
+            ChangeState(State.Slowed);
         }
     }
 
